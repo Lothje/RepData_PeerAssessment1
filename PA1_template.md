@@ -1,5 +1,10 @@
 # Reproducible Research: Peer Assessment 1
 
+
+```r
+options(scipen = 1, digits = 2)
+```
+
 ## A. Introduction
 
 This is the first assignment for the course Reproducable Research of the John Hopkins Data Science Specialization.
@@ -44,14 +49,14 @@ summary(StepData)
 ```
 
 ```
-##      steps                date          interval     
-##  Min.   :  0.00   2012-10-01:  288   Min.   :   0.0  
-##  1st Qu.:  0.00   2012-10-02:  288   1st Qu.: 588.8  
-##  Median :  0.00   2012-10-03:  288   Median :1177.5  
-##  Mean   : 37.38   2012-10-04:  288   Mean   :1177.5  
-##  3rd Qu.: 12.00   2012-10-05:  288   3rd Qu.:1766.2  
-##  Max.   :806.00   2012-10-06:  288   Max.   :2355.0  
-##  NA's   :2304     (Other)   :15840
+##      steps              date          interval   
+##  Min.   :  0    2012-10-01:  288   Min.   :   0  
+##  1st Qu.:  0    2012-10-02:  288   1st Qu.: 589  
+##  Median :  0    2012-10-03:  288   Median :1178  
+##  Mean   : 37    2012-10-04:  288   Mean   :1178  
+##  3rd Qu.: 12    2012-10-05:  288   3rd Qu.:1766  
+##  Max.   :806    2012-10-06:  288   Max.   :2355  
+##  NA's   :2304   (Other)   :15840
 ```
 
 The first analyzing of the data we do with the missing values deleted.
@@ -86,20 +91,10 @@ hist(TotalStepsPerDay, 10, main = "Total steps per day", xlab = "")
 ```r
 MeanSteps <- mean(TotalStepsPerDay, na.rm=TRUE)
 MedianSteps <- median(TotalStepsPerDay, na.rm=TRUE)
-cat("Mean of the total steps taken per day = ",  MeanSteps)
 ```
 
-```
-## Mean of the total steps taken per day =  10766.19
-```
+Mean of the total steps taken per day =  10766.19 and the median of the total steps taken per day = 10765.
 
-```r
-cat("Median of the total steps taken per day = ",  MedianSteps)
-```
-
-```
-## Median of the total steps taken per day =  10765
-```
 
 ## D. Daily activity pattern
 
@@ -142,9 +137,12 @@ cat("The interval with the most avarage steps is", MostSteps$interval,
 ```
 
 ```
-## The interval with the most avarage steps is 835 with the avarge number of steps 206.1698
+## The interval with the most avarage steps is 835 with the avarge number of steps 206
 ```
 
+The interval with the most avarage steps is 835 with the avarage number of steps 206.17.
+
+    
 ## E. Imputing missing values
 
 ### 1.Total number of missing values in the dataset for steps. 
@@ -227,48 +225,14 @@ Calculate and report the mean and the median of the total number of steps taken 
 ```r
 MeanStepsNew <- mean(TotalStepsPerDayNew)
 MedianStepsNew <- median(TotalStepsPerDayNew)
-cat(" Mean of the total steps taken per day with missing values removed = ",  
-    MeanSteps, "\n", 
-    "Mean of the total steps taken per day with missing values filled =", MeanStepsNew)
+DiffMean <- MeanStepsNew - MeanSteps
+DiffMedian <- MedianStepsNew - MedianSteps
 ```
 
-```
-##  Mean of the total steps taken per day with missing values removed =  10766.19 
-##  Mean of the total steps taken per day with missing values filled = 10766.19
-```
+Mean of the total steps taken per day with missing values removed = 10766.19 and the mean of the total steps taken per day with missing values filled = 10766.19. The difference is 0.
 
-```r
-cat(" Median of the total steps taken per day with missing values removed = ",
-    MedianSteps, "\n", 
-    "Median of the total steps taken per day with missing values filled =", MedianStepsNew)
-```
+The median of the total steps taken per day with missing values removed = 10765 and the median of the total steps taken per day with missing values filled = 10766.19. The difference is 1.19.
 
-```
-##  Median of the total steps taken per day with missing values removed =  10765 
-##  Median of the total steps taken per day with missing values filled = 10766.19
-```
-
-The difference between the missing values removed and the missing values replaced by the mean of the interval is:
-
-For the mean the difference is:
-
-```r
-MeanStepsNew - MeanSteps
-```
-
-```
-## [1] 0
-```
-
-For the median the difference is:
-
-```r
-MedianStepsNew - MedianSteps
-```
-
-```
-## [1] 1.188679
-```
 
 ## F. Are there differences in activity patterns between weekdays and weekend?
 
@@ -292,9 +256,8 @@ StepDataNew[!(StepDataNew$day == "zondag" | StepDataNew$day == "zaterdag"), 5] <
 ```r
 ## Calculate avarage steps per weekday/weekend and per interval
 MeanStepsWeekday <- aggregate(x=list(MeanSteps=StepDataNew$steps), 
-                                 by=list(wd = StepDataNew$wd, interval=StepDataNew$interval), 
-
-                              FUN=mean)
+                                 by=list(wd = StepDataNew$week_weekend, interval=StepDataNew$interval), 
+                                 FUN=mean)
 ## Create plot using Lattice
 library(lattice)
 xyplot(MeanSteps ~ interval| wd, data = MeanStepsWeekday, 
